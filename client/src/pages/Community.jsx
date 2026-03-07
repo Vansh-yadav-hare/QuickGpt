@@ -2,13 +2,29 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { dummyPublishedImages } from '../assets/assets';
 import Loading from './Loading';
+import { useAppContext } from '../context/AppContext';
+import toast from 'react-hot-toast';
 
 const Community = () => {
 
   const [images,setImages]=useState([]);
   const [loading,setLoading]=useState(true);
+
+  const {axios}=useAppContext();
   const fetchImages=async()=>{
-    setImages(dummyPublishedImages)
+    try {
+
+      const {data}=await axios.get('/api/user/published-images');
+       console.log(data);   // 👈 add this
+      if(data.success){
+        setImages(data.Images || []);
+      }else{
+        toast.error(data.message);
+      }
+      
+    } catch (error) {
+      toast.error(error.message);
+    }
     setLoading(false);
   }
 
@@ -24,7 +40,7 @@ const Community = () => {
       <h2 className="text-xl font-semibold mb-6
        text-gray-800 dark:text-purple-100">Community Images</h2>
 
-       {images.length>0 ? (
+       {images.length >0 ? (
         <div className="flex flex-wrap max-sm:justify-center gap-5">
           {/* In this div we have to display all the images  */}
           {images.map((item,index)=>(

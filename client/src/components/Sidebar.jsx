@@ -2,11 +2,38 @@ import React, { useState } from 'react'
 import { useAppContext } from '../context/AppContext'
 import { assets } from "../assets/assets";
 import moment from 'moment';
+import toast from 'react-hot-toast';
 
 const SideBar = ({isMenuOpen, setIsMenuOpen}) => {
 
-  const {chats,setSelectedChat,theme,setTheme,user,navigate}=useAppContext()
+  const {chats,setSelectedChat,theme,setTheme,user,navigate,createNewChat,axios,setChats,fetchUserChats,setToken,token}=useAppContext()
   const [search,setSearch]=useState('');
+
+  const logout=()=>{
+    localStorage.removeItem('token');
+    setToken(null);
+    toast.success('Logged out successfully');
+     navigate("/");
+  }
+
+  // add function to delete the chat
+  const deleteChat=async(e,chatId)=>{
+    try{
+      e.stopPropagation();
+      const confirm=window.confirm('Are you sure you want to delete this chat?');
+      if(!confirm) return;
+
+      const {data}=await axios.post('/api/chat/delete',{chatId},{headers:{Authorization:token}});
+      if(data.success){
+        setChats(chats.filter(chat=> chat._id !== chatId));
+        await fetchUserChats();
+        toast.success(data.message);
+      }
+
+    }catch(error){
+      toast.error(error.message);
+    }
+  }
   
   // console.log(search);
 
@@ -22,7 +49,7 @@ const SideBar = ({isMenuOpen, setIsMenuOpen}) => {
       />
 
       {/* New chat button */}
-      <button  className="flex justify-center items-center w-full py-2 mt-6  text-white bg-gradient-to-r from-[#A456F7] to-[#3D81F6] text-sm rounded-md cursor-pointer">
+      <button onClick={createNewChat} className="flex justify-center items-center w-full py-2 mt-6  text-white bg-gradient-to-r from-[#A456F7] to-[#3D81F6] text-sm rounded-md cursor-pointer">
         <span className="mr-2 text-xl">+</span> New Chat
       </button>
 
@@ -70,6 +97,7 @@ const SideBar = ({isMenuOpen, setIsMenuOpen}) => {
                 </p>
               </div>
               <img
+             
                 src={assets.bin_icon}
                 className="hidden group-hover:block w-4 cursor-pointer not-dark:invert"
                 alt=""
@@ -130,7 +158,7 @@ const SideBar = ({isMenuOpen, setIsMenuOpen}) => {
         </p>
         {user && (
           <img
-            // onClick={logout}
+            onClick={logout}
             src={assets.logout_icon}
             className="h-5 cursor-pointer hidden not-dark:invert group-hover:block"
             alt=""
@@ -141,7 +169,9 @@ const SideBar = ({isMenuOpen, setIsMenuOpen}) => {
 
 
       {/* Now ading close icon to close the sidebar in mobile view  */}
-        <img  onClick={()=>setIsMenuOpen(false)} src={assets.close_icon} className="absolute top-3 right-3 w-5 h-5 cursor-pointer md:hidden not-dark:invert" alt="" />
+        <img  onClick={()=>setIsMenuOpen(false)} src={assets.close_icon} 
+        className="absolute top-3 right-3 w-5 h-5 cursor-pointer md:hidden not-dark:invert" 
+        alt="" />
 
 
 
