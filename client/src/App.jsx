@@ -1,5 +1,5 @@
 import React, { use } from "react";
-import SideBar from "./components/SideBar";
+import Sidebar from "./components/Sidear";
 import { Route, Routes, useLocation } from "react-router-dom";
 import ChatBox from "./components/ChatBox";
 import Credits from "./pages/Credits";
