@@ -99,7 +99,7 @@ STRIPE_SECRET_KEY=your_stripe_secret_key
 ### 1️⃣ Clone the Repository
 
 ```
-git clone https://github.com/yourusername/quickgpt.git
+git clone https://github.com/Vansh-yadav-hare/QuickGpt.git
 cd quickgpt
 ```
 
@@ -154,7 +154,7 @@ npm run dev
 
 **Vansh Yadav**
 
-GitHub: https://github.com/yourusername
+GitHub: https://github.com/Vansh-yadav-hare
 
 ---
 
